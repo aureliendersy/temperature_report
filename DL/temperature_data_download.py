@@ -53,6 +53,25 @@ def import_historical_data(latitude, longitude, time_horizon):
     return response_data
 
 
+def translate_dict_to_list(data, time_param):
+    """
+
+    To create a dataframe we might want to flatten some underlying
+    dictionaries (e.g. rain dictionary)
+
+    Valid for current param only
+
+    :param time_param:
+    :param data:
+    :return:
+    """
+
+    if time_param == 'current' and isinstance(data, dict):
+        return [data]
+    else:
+        return data
+
+
 def format_to_dataframe(response_data, time_parameters, city):
     """
 
@@ -67,7 +86,8 @@ def format_to_dataframe(response_data, time_parameters, city):
     dataframes = {}
 
     for time_param in time_parameters:
-        dataframes[time_param] = pd.DataFrame(response_data[time_param])
+        time_reponse = translate_dict_to_list(response_data[time_param], time_param)
+        dataframes[time_param] = pd.DataFrame(time_reponse)
         dataframes[time_param]['City'] = city
 
     return dataframes
@@ -100,8 +120,8 @@ def acquire_city_weather_data(city, horizon_days=5):
         historic_data = format_to_dataframe(data_response_historical, ['current', 'hourly'], city)
 
         # Add all of the time horizons into one dictionary
-        historical_snapshot_data = historical_snapshot_data.append(historic_data['current'])
-        historical_hourly_data = historical_hourly_data.append(historic_data['hourly'])
+        historical_snapshot_data = historical_snapshot_data.append(historic_data['current'], sort=False)
+        historical_hourly_data = historical_hourly_data.append(historic_data['hourly'], sort=False)
 
     # Return a final dictionary with all of the data
     full_data['historical_snapshot'] = historical_snapshot_data
@@ -131,6 +151,6 @@ def acquire_all_weather_data(cities, horizon_days=5):
             full_data = city_data
         else:
             for time_tags in full_data.keys():
-                full_data[time_tags] = full_data[time_tags].append(city_data[time_tags])
+                full_data[time_tags] = full_data[time_tags].append(city_data[time_tags], sort=False)
 
     return full_data
