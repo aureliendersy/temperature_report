@@ -82,6 +82,34 @@ class DataTable(Element):
         self.style = deepcopy(dict_of_styles[self.style_label])
         self.drawable.setStyle(self.style)
 
+    def set_column_format(self, col_name, format_style):
+        """
+
+        Assign the desired column format
+
+        :param col_name:
+        :param format_style:
+        :return:
+        """
+
+        num_col = self.dataframe.columns.tolist().index(col_name)
+
+        for row in self.drawable._cellvalues[1:]:
+            row[num_col] = format_style.format(row[num_col])
+
+    def set_columns_format(self, col_names, format_style):
+        """
+
+        Format multiple columns at the same time
+
+        :param col_names:
+        :param format_style:
+        :return:
+        """
+
+        for col_name in col_names:
+            self.set_column_format(col_name, format_style)
+
 
 class Header(Element):
 
@@ -118,15 +146,27 @@ class Header(Element):
 
         :return:
         """
-        verify_style_label(self.style_label, dict_of_styles)
-        self.style = deepcopy(dict_of_styles[self.style_label])
+
+        if self.style is None:
+            verify_style_label(self.style_label, dict_of_styles)
+            self.style = deepcopy(dict_of_styles[self.style_label])
 
         self.drawable.setStyle(self.style)
 
 
+class FullPageHeader(Header):
+
+    def __init__(self, text, header_style_label='default_page_header', header_style=None, header_width='full_page',
+                 halign='LEFT', valign='MIDDLE'):
+
+        super().__init__(text, header_style_label=header_style_label, header_style=header_style,
+                         header_width=header_width, halign=halign, valign=valign)
+
+
 class Document(SimpleDocTemplate):
-    def __init__(self, pdf_to_create):
-        super().__init__(filename=pdf_to_create)
+    def __init__(self, pdf_to_create, leftmargin=0, rightmargin=0, topmargin=0, bottommargin=0):
+        super().__init__(filename=pdf_to_create, leftMargin=leftmargin, rightMargin=rightmargin, topMargin=topmargin,
+                         bottomMargin=bottommargin)
         self.elements = []
 
     def add_element(self, element: Element):

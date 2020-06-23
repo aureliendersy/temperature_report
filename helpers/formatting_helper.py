@@ -22,11 +22,22 @@ default_header = TableStyle([
     ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ('TEXTCOLOR', (0, 0), (-1, -1), black),
-    ('BACKGROUND', (0, 0), (-1, -1), Color(230/255, 230/255, 250/255)),
+    ('BACKGROUND', (0, 0), (-1, -1), Color(255/255, 255/255, 255/255)),
     ('FONTSIZE', (0, 0), (-1, -1), 16),
-    ('LEADING', (0, 0), (-1, -1), 16)])
+    ('LEADING', (0, 0), (-1, -1), 16),
+    ('LINEBELOW', (0, 0), (-1, -1), 2, Color(0/255, 0/255, 0/255))])
 
-dict_of_styles = {'default_table': default_table, 'default_header': default_header}
+default_page_header = TableStyle([
+    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+    ('TEXTCOLOR', (0, 0), (-1, -1), black),
+    ('BACKGROUND', (0, 0), (-1, -1), Color(153/255, 255/255, 204/255)),
+    ('FONTSIZE', (0, 0), (-1, -1), 12),
+    ('LEADING', (0, 0), (-1, -1), 12)])
+
+
+dict_of_styles = {'default_table': default_table, 'default_header': default_header,
+                  'default_page_header': default_page_header}
 
 
 def verify_style_label(style_label, dict_styles):
